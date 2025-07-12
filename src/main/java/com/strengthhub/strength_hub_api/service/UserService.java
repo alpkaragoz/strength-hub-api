@@ -1,18 +1,16 @@
 package com.strengthhub.strength_hub_api.service;
 
+import com.strengthhub.strength_hub_api.dto.request.CoachRegistrationRequest;
 import com.strengthhub.strength_hub_api.dto.request.UserRegistrationRequest;
 import com.strengthhub.strength_hub_api.dto.request.UserUpdateRequest;
 import com.strengthhub.strength_hub_api.dto.response.UserResponse;
 import com.strengthhub.strength_hub_api.enums.UserType;
-import com.strengthhub.strength_hub_api.exception.coach.InvalidCoachCodeException;
 import com.strengthhub.strength_hub_api.exception.user.UserAlreadyExistsException;
 import com.strengthhub.strength_hub_api.exception.user.UserNotFoundException;
 import com.strengthhub.strength_hub_api.model.User;
 import com.strengthhub.strength_hub_api.model.Lifter;
-import com.strengthhub.strength_hub_api.model.Coach;
 import com.strengthhub.strength_hub_api.repository.UserRepository;
 import com.strengthhub.strength_hub_api.repository.LifterRepository;
-import com.strengthhub.strength_hub_api.repository.CoachRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,8 +31,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final LifterRepository lifterRepository;
-    private final CoachRepository coachRepository;
-    private final CoachCodeService coachCodeService;
+    private final CoachService coachService;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -73,28 +70,10 @@ public class UserService {
 
         // Process coach code if provided
         if (request.getCoachCode() != null && !request.getCoachCode().trim().isEmpty()) {
-            try {
-                if (coachCodeService.validateCoachCode(request.getCoachCode())) {
-                    // Create coach profile
-                    Coach coach = Coach.builder()
-                            .coachId(savedUser.getUserId())
-                            .app_user(savedUser)
-                            .bio("") // Default empty bio
-                            .certifications("") // Default empty certifications
-                            .build();
-                    // Mark code as used
-                    coachCodeService.useCoachCode(request.getCoachCode(), savedUser.getUserId());
-                    coachRepository.save(coach);
-
-                    log.info("User registered as both lifter and coach with id: {}", savedUser.getUserId());
-                } else {
-                    log.warn("Invalid coach code provided during registration for user: {}", request.getUsername());
-                    // Continue with just lifter registration, don't fail the entire process
-                }
-            } catch (InvalidCoachCodeException e) {
-                log.warn("Coach code validation failed for user: {} - {}", request.getUsername(), e.getMessage());
-                // Continue with just lifter registration
-            }
+            CoachRegistrationRequest req = CoachRegistrationRequest.builder()
+                    .coachCode(request.getCoachCode())
+                    .build();
+            coachService.createCoach(savedUser.getUserId(), req);
         }
 
         log.info("User registered with id: {}", savedUser.getUserId());
@@ -172,15 +151,15 @@ public class UserService {
         log.info("User deleted with id: {}", userId);
     }
 
-    @Transactional(readOnly = true)
-    public Set<UserType> getUserRoles(UUID userId) {
+
+    public Set<UserType> getUserRoles (User user) {
         Set<UserType> roles = new HashSet<>();
 
-        if (lifterRepository.existsById(userId)) {
+        if (user.isLifter()) {
             roles.add(UserType.LIFTER);
         }
 
-        if (coachRepository.existsById(userId)) {
+        if (user.isCoach()) {
             roles.add(UserType.COACH);
         }
 
@@ -188,7 +167,7 @@ public class UserService {
     }
 
     private UserResponse mapToResponse(User user) {
-        Set<UserType> roles = getUserRoles(user.getUserId());
+        Set<UserType> roles = getUserRoles(user);
 
         return UserResponse.builder()
                 .userId(user.getUserId())

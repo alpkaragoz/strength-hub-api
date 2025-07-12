@@ -9,6 +9,7 @@ import com.strengthhub.strength_hub_api.dto.response.LifterSummaryResponse;
 import com.strengthhub.strength_hub_api.exception.coach.CoachAlreadyExistsException;
 import com.strengthhub.strength_hub_api.exception.coach.CoachNotFoundException;
 import com.strengthhub.strength_hub_api.exception.coach.InvalidCoachAssignmentException;
+import com.strengthhub.strength_hub_api.exception.coach.InvalidCoachCodeException;
 import com.strengthhub.strength_hub_api.exception.lifter.LifterNotFoundException;
 import com.strengthhub.strength_hub_api.exception.user.UserNotFoundException;
 import com.strengthhub.strength_hub_api.model.Coach;
@@ -34,6 +35,7 @@ public class CoachService {
     private final CoachRepository coachRepository;
     private final UserRepository userRepository;
     private final LifterRepository lifterRepository;
+    private final CoachCodeService coachCodeService;
 
     @Transactional
     public CoachResponse createCoach(UUID userId, CoachRegistrationRequest request) {
@@ -46,6 +48,27 @@ public class CoachService {
         // Check if coach profile already exists for this user
         if (coachRepository.existsById(userId)) {
             throw new CoachAlreadyExistsException(userId);
+        }
+
+        // Process coach code if provided
+        if (request.getCoachCode() != null && !request.getCoachCode().trim().isEmpty()) {
+                if (coachCodeService.validateCoachCode(request.getCoachCode())) {
+                    // Create coach profile
+                    Coach coach = Coach.builder()
+                            .coachId(userId)
+                            .app_user(user)
+                            .bio(request.getBio() != null ? request.getBio() : "")
+                            .certifications(request.getCertifications() != null ? request.getCertifications() : "")
+                            .build();
+
+                    Coach savedCoach = coachRepository.save(coach);
+                    log.info("Coach profile created for user with id: {}", userId);
+
+                    return mapToResponse(savedCoach);
+                } else {
+                    log.warn("Invalid coach code provided during registration.");
+                    // Continue with just lifter registration, don't fail the entire process
+                }
         }
 
         // Create coach profile

@@ -1,5 +1,7 @@
 package com.strengthhub.strength_hub_api.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,4 +19,8 @@ public class CoachRegistrationRequest {
 
     @Size(max = 2000, message = "Certifications cannot exceed 2000 characters")
     private String certifications;
+
+    @NotBlank(message = "Code is required")
+    @Size(max = 50, message = "Code cannot exceed 50 characters")
+    private String coachCode;
 }
