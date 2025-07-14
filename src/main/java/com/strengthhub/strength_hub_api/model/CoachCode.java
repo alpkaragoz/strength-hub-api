@@ -8,7 +8,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "coach_codes")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

@@ -9,10 +9,11 @@ import java.util.ArrayList;
 
 @Entity
 @Table(name = "coach")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Coach {
 
     @Id

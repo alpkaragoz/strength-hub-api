@@ -7,10 +7,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "lifter")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Lifter {
 
     @Id
