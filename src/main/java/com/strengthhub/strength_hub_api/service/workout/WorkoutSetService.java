@@ -1,4 +1,4 @@
-package com.strengthhub.strength_hub_api.service.Workout;
+package com.strengthhub.strength_hub_api.service.workout;
 
 import com.strengthhub.strength_hub_api.dto.request.workout.WorkoutSetRequest;
 import com.strengthhub.strength_hub_api.dto.request.workout.SetCompletionRequest;
