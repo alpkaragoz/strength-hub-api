@@ -6,16 +6,27 @@ spring:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20      # Max database connections
+      minimum-idle: 5            # Always keep 5 connections ready
+      connection-timeout: 20000  # Wait 20s for connection before failing
+      idle-timeout: 300000       # Close unused connections after 5 min
+      leak-detection-threshold: 60000  # Alert if connection held >60s
+  security:
+    require-ssl: true
 
   # Production JPA settings
   jpa:
     hibernate:
-      ddl-auto: validate  # NEVER drops data in production
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: false
         show_sql: false
         use_sql_comments: false
+        jdbc:
+          batch_size: 50     # Insert/update 50 records at once instead of 1
+          fetch_size: 50     # Fetch 50 records at once when querying
     show-sql: false
 
 # Production logging
@@ -28,3 +39,30 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: /var/log/strength-hub-api/application.log
+    max-size: 100MB    # Rotate when file gets this big
+    max-history: 30    # Keep 30 old log files
+
+server:
+  ssl:
+    enabled: true
+  tomcat:
+    max-threads: 200        # Handle 200 concurrent requests
+    min-spare-threads: 10   # Always keep 10 threads ready
+    max-connections: 8192   # Accept up to 8192 connections
+  compression:
+    enabled: true           # Compress responses = faster loading
+    mime-types: application/json,text/html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator  # Predictable path
+  endpoint:
+    health:
+      show-details: never   # SECURITY: Don't expose DB details to public
+      probes:
+        enabled: true       # For Kubernetes health checks
