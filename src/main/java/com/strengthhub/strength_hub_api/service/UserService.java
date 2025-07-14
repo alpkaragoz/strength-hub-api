@@ -73,7 +73,7 @@ public class UserService {
             CoachRegistrationRequest req = CoachRegistrationRequest.builder()
                     .coachCode(request.getCoachCode())
                     .build();
-            coachService.createCoach(savedUser.getUserId(), req);
+//            coachService.createCoach(savedUser.getUserId(), req);
         }
 
         log.info("User registered with id: {}", savedUser.getUserId());
