@@ -1,4 +1,4 @@
-package com.strengthhub.strength_hub_api.dto.response;
+package com.strengthhub.strength_hub_api.dto.response.coach;
 
 import com.strengthhub.strength_hub_api.enums.CoachCodeStatus;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.strengthhub.strength_hub_api.dto.request;
+package com.strengthhub.strength_hub_api.dto.request.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

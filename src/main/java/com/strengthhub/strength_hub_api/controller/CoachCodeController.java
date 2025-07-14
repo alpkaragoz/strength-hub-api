@@ -1,6 +1,6 @@
 package com.strengthhub.strength_hub_api.controller;
 
-import com.strengthhub.strength_hub_api.dto.response.CoachCodeResponse;
+import com.strengthhub.strength_hub_api.dto.response.coach.CoachCodeResponse;
 import com.strengthhub.strength_hub_api.service.CoachCodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

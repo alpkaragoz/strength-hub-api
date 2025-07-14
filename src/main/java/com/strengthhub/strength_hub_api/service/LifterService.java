@@ -1,7 +1,7 @@
 package com.strengthhub.strength_hub_api.service;
 
-import com.strengthhub.strength_hub_api.dto.response.CoachSummaryResponse;
-import com.strengthhub.strength_hub_api.dto.response.LifterResponse;
+import com.strengthhub.strength_hub_api.dto.response.coach.CoachSummaryResponse;
+import com.strengthhub.strength_hub_api.dto.response.lifter.LifterResponse;
 import com.strengthhub.strength_hub_api.exception.coach.CoachNotFoundException;
 import com.strengthhub.strength_hub_api.exception.lifter.LifterNotFoundException;
 import com.strengthhub.strength_hub_api.model.Coach;

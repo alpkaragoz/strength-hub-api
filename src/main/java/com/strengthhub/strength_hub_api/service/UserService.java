@@ -1,9 +1,9 @@
 package com.strengthhub.strength_hub_api.service;
 
-import com.strengthhub.strength_hub_api.dto.request.CoachRegistrationRequest;
-import com.strengthhub.strength_hub_api.dto.request.UserRegistrationRequest;
-import com.strengthhub.strength_hub_api.dto.request.UserUpdateRequest;
-import com.strengthhub.strength_hub_api.dto.response.UserResponse;
+import com.strengthhub.strength_hub_api.dto.request.coach.CoachRegistrationRequest;
+import com.strengthhub.strength_hub_api.dto.request.user.UserRegistrationRequest;
+import com.strengthhub.strength_hub_api.dto.request.user.UserUpdateRequest;
+import com.strengthhub.strength_hub_api.dto.response.user.UserResponse;
 import com.strengthhub.strength_hub_api.enums.UserType;
 import com.strengthhub.strength_hub_api.exception.user.UserAlreadyExistsException;
 import com.strengthhub.strength_hub_api.exception.user.UserNotFoundException;
@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

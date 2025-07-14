@@ -1,7 +1,7 @@
 package com.strengthhub.strength_hub_api.controller;
 
-import com.strengthhub.strength_hub_api.dto.request.CoachAssignmentRequest;
-import com.strengthhub.strength_hub_api.dto.response.LifterResponse;
+import com.strengthhub.strength_hub_api.dto.request.coach.CoachAssignmentRequest;
+import com.strengthhub.strength_hub_api.dto.response.lifter.LifterResponse;
 import com.strengthhub.strength_hub_api.service.LifterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

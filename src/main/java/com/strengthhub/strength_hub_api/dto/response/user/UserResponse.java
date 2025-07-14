@@ -1,4 +1,4 @@
-package com.strengthhub.strength_hub_api.dto.response;
+package com.strengthhub.strength_hub_api.dto.response.user;
 
 import com.strengthhub.strength_hub_api.enums.UserType;
 import lombok.AllArgsConstructor;

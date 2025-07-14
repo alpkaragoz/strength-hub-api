@@ -1,7 +1,6 @@
-package com.strengthhub.strength_hub_api.dto.request;
+package com.strengthhub.strength_hub_api.dto.request.coach;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

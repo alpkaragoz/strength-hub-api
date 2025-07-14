@@ -1,11 +1,11 @@
 package com.strengthhub.strength_hub_api.service;
 
-import com.strengthhub.strength_hub_api.dto.request.CoachRegistrationRequest;
-import com.strengthhub.strength_hub_api.dto.request.CoachUpdateRequest;
-import com.strengthhub.strength_hub_api.dto.response.CoachResponse;
-import com.strengthhub.strength_hub_api.dto.response.CoachDetailResponse;
-import com.strengthhub.strength_hub_api.dto.response.CoachSummaryResponse;
-import com.strengthhub.strength_hub_api.dto.response.LifterSummaryResponse;
+import com.strengthhub.strength_hub_api.dto.request.coach.CoachRegistrationRequest;
+import com.strengthhub.strength_hub_api.dto.request.coach.CoachUpdateRequest;
+import com.strengthhub.strength_hub_api.dto.response.coach.CoachResponse;
+import com.strengthhub.strength_hub_api.dto.response.coach.CoachDetailResponse;
+import com.strengthhub.strength_hub_api.dto.response.coach.CoachSummaryResponse;
+import com.strengthhub.strength_hub_api.dto.response.lifter.LifterSummaryResponse;
 import com.strengthhub.strength_hub_api.exception.coach.CoachAlreadyExistsException;
 import com.strengthhub.strength_hub_api.exception.coach.CoachNotFoundException;
 import com.strengthhub.strength_hub_api.exception.coach.InvalidCoachAssignmentException;

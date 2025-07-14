@@ -1,8 +1,8 @@
 package com.strengthhub.strength_hub_api.controller;
 
-import com.strengthhub.strength_hub_api.dto.request.UserRegistrationRequest;
-import com.strengthhub.strength_hub_api.dto.request.UserUpdateRequest;
-import com.strengthhub.strength_hub_api.dto.response.UserResponse;
+import com.strengthhub.strength_hub_api.dto.request.user.UserRegistrationRequest;
+import com.strengthhub.strength_hub_api.dto.request.user.UserUpdateRequest;
+import com.strengthhub.strength_hub_api.dto.response.user.UserResponse;
 import com.strengthhub.strength_hub_api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
