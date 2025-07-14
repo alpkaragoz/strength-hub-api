@@ -2,7 +2,6 @@ package com.strengthhub.strength_hub_api.controller;
 
 import com.strengthhub.strength_hub_api.dto.request.CoachRegistrationRequest;
 import com.strengthhub.strength_hub_api.dto.request.CoachUpdateRequest;
-import com.strengthhub.strength_hub_api.dto.request.CoachAssignmentRequest;
 import com.strengthhub.strength_hub_api.dto.response.CoachResponse;
 import com.strengthhub.strength_hub_api.dto.response.CoachDetailResponse;
 import com.strengthhub.strength_hub_api.dto.response.LifterSummaryResponse;
