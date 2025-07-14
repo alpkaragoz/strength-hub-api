@@ -18,15 +18,10 @@ public class CoachCodeController {
 
     private final CoachCodeService coachCodeService;
 
+    // TODO will change auth system no secretkey in body
     @PostMapping("/generate")
     public ResponseEntity<CoachCodeResponse> generateCoachCode(@Valid @RequestBody String secretKey) {
         CoachCodeResponse generatedCode = coachCodeService.generateCoachCode(secretKey);
         return new ResponseEntity<>(generatedCode, HttpStatus.CREATED);
-    }
-
-    @PostMapping("/validate")
-    public ResponseEntity<Boolean> validateCoachCode(@RequestParam String code) {
-        boolean isValid = coachCodeService.validateCoachCode(code);
-        return ResponseEntity.ok(isValid);
     }
 }

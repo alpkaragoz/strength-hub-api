@@ -49,31 +49,8 @@ public class CoachCodeService {
         return mapToResponse(savedCode);
     }
 
-    @Transactional(readOnly = true)
-    public boolean validateCoachCode(String code) {
-        Optional<CoachCode> codeEntity = coachCodeRepository.findByCode(code);
-
-        if (codeEntity.isEmpty()) {
-            return false; // Code doesn't exist
-        }
-
-        CoachCode coachCode = codeEntity.get();
-
-        // Check if already used
-        if (coachCode.getIsUsed()) {
-            return false; // Already used (one-time only)
-        }
-
-        // Check if expired (24 hours)
-        if (LocalDateTime.now().isAfter(coachCode.getExpiresAt())) {
-            return false; // Expired
-        }
-
-        return true; // Valid code!
-    }
-
     @Transactional
-    public void useCoachCode(String code, UUID userId) {
+    public void validateAndUseCoachCode(String code, UUID userId) {
         CoachCode coachCode = coachCodeRepository.findByCode(code)
                 .orElseThrow(() -> new InvalidCoachCodeException("Code not found"));
 

@@ -67,7 +67,7 @@ public class UserService {
         lifterRepository.save(lifter);
 
         // Process coach code if provided
-        if (request.getCoachCode() != null && !request.getCoachCode().trim().isEmpty()) {
+        if (request.getCoachCode() != null) {
             CoachRegistrationRequest req = CoachRegistrationRequest.builder()
                     .coachCode(request.getCoachCode())
                     .build();

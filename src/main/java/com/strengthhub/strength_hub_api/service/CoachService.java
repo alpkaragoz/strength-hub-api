@@ -52,37 +52,23 @@ public class CoachService {
 
         // Process coach code if provided
         if (request.getCoachCode() != null && !request.getCoachCode().trim().isEmpty()) {
-                if (coachCodeService.validateCoachCode(request.getCoachCode())) {
-                    // Create coach profile
-                    Coach coach = Coach.builder()
-                            .coachId(userId)
-                            .app_user(user)
-                            .bio(request.getBio() != null ? request.getBio() : "")
-                            .certifications(request.getCertifications() != null ? request.getCertifications() : "")
-                            .build();
+            coachCodeService.validateAndUseCoachCode(request.getCoachCode(), user.getUserId());
 
-                    Coach savedCoach = coachRepository.save(coach);
-                    log.info("Coach profile created for user with id: {}", userId);
+            // Create coach profile
+            Coach coach = Coach.builder()
+                    .app_user(user)
+                    .bio(request.getBio() != null ? request.getBio() : "")
+                    .certifications(request.getCertifications() != null ? request.getCertifications() : "")
+                    .build();
 
-                    return mapToResponse(savedCoach);
-                } else {
-                    log.warn("Invalid coach code provided during registration.");
-                    // Continue with just lifter registration, don't fail the entire process
-                }
+            Coach savedCoach = coachRepository.save(coach);
+            log.info("Coach profile created for user with id: {}", userId);
+
+            return mapToResponse(savedCoach);
+        } else {
+            log.warn("Empty coach code provided during registration.");
+            throw new InvalidCoachCodeException("Coach code cannot be null or empty.");
         }
-
-        // Create coach profile
-        Coach coach = Coach.builder()
-                .coachId(userId)
-                .app_user(user)
-                .bio(request.getBio() != null ? request.getBio() : "")
-                .certifications(request.getCertifications() != null ? request.getCertifications() : "")
-                .build();
-
-        Coach savedCoach = coachRepository.save(coach);
-        log.info("Coach profile created for user with id: {}", userId);
-
-        return mapToResponse(savedCoach);
     }
 
     @Transactional(readOnly = true)
