@@ -40,3 +40,8 @@ management:
 app:
   coach:
     secret-key: ${COACH_SECRET_KEY:default-fallback}
+  jwt:
+    secret: ${JWT_SECRET}
+    access-token-expiration-ms: ${JWT_ACCESS_EXPIRATION}  # 1 hour
+    refresh-token-expiration-ms: ${JWT_REFRESH_EXPIRATION}  # 30 days
+    issuer: ${JWT_ISSUER}

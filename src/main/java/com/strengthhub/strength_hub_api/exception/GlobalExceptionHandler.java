@@ -1,6 +1,7 @@
 package com.strengthhub.strength_hub_api.exception;
 
 import com.strengthhub.strength_hub_api.dto.response.ErrorResponse;
+import com.strengthhub.strength_hub_api.exception.auth.TokenRefreshException;
 import com.strengthhub.strength_hub_api.exception.coach.CoachAlreadyExistsException;
 import com.strengthhub.strength_hub_api.exception.coach.CoachNotFoundException;
 import com.strengthhub.strength_hub_api.exception.coach.InvalidCoachAssignmentException;
@@ -257,4 +258,17 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(TokenRefreshException.class)
+    public ResponseEntity<ErrorResponse> handleTokenRefreshException(TokenRefreshException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error("Token Refresh Failed")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    //TODO bad credentials
 }
