@@ -9,26 +9,27 @@ import com.strengthhub.strength_hub_api.repository.CoachCodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CoachCodeService {
 
+    @Value("${app.coach.secret-key}")
+    private String coachSecretKey;
+
     private final CoachCodeRepository coachCodeRepository;
 
     @Transactional
     public CoachCodeResponse generateCoachCode(String secretKey) {
-        // TODO
-        if(!secretKey.equals("secret")) {
+        if(!secretKey.equals(coachSecretKey)) {
             throw new UnauthorizedAccessException("Cannot generate coach code, wrong credentials.");
         }
         log.info("Generating coach code");
