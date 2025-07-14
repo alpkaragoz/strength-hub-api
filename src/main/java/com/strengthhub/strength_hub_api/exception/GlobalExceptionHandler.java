@@ -11,6 +11,7 @@ import com.strengthhub.strength_hub_api.exception.lifter.LifterNotFoundException
 import com.strengthhub.strength_hub_api.exception.user.InvalidUserTypeException;
 import com.strengthhub.strength_hub_api.exception.user.UserAlreadyExistsException;
 import com.strengthhub.strength_hub_api.exception.user.UserNotFoundException;
+import com.strengthhub.strength_hub_api.exception.workout.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -144,5 +145,116 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    // New workout exception handlers
+    @ExceptionHandler(WorkoutPlanNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleWorkoutPlanNotFoundException(WorkoutPlanNotFoundException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Workout Plan Not Found")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(WorkoutWeekNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleWorkoutWeekNotFoundException(WorkoutWeekNotFoundException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Workout Week Not Found")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(WorkoutDayNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleWorkoutDayNotFoundException(WorkoutDayNotFoundException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Workout Day Not Found")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ExerciseNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleExerciseNotFoundException(ExerciseNotFoundException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Exercise Not Found")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(WorkoutSetNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleWorkoutSetNotFoundException(WorkoutSetNotFoundException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Workout Set Not Found")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidWorkoutStructureException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidWorkoutStructureException(InvalidWorkoutStructureException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Invalid Workout Structure")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(WorkoutPlanAlreadyAssignedException.class)
+    public ResponseEntity<ErrorResponse> handleWorkoutPlanAlreadyAssignedException(WorkoutPlanAlreadyAssignedException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("Workout Plan Already Assigned")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UnauthorizedWorkoutAccessException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedWorkoutAccessException(UnauthorizedWorkoutAccessException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.FORBIDDEN.value())
+                .error("Unauthorized Workout Access")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(WorkoutPlanInactiveException.class)
+    public ResponseEntity<ErrorResponse> handleWorkoutPlanInactiveException(WorkoutPlanInactiveException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Workout Plan Inactive")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateWorkoutStructureException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateWorkoutStructureException(DuplicateWorkoutStructureException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("Duplicate Workout Structure")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 }
