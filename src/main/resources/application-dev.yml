@@ -1,0 +1,29 @@
+# Development environment configuration
+spring:
+  # Local development database
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hub_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  # Development JPA settings
+  jpa:
+    hibernate:
+      ddl-auto: create  # Recreates schema on restart
+    properties:
+      hibernate:
+        format_sql: true  # Pretty print SQL for debugging
+        show_sql: true    # Show SQL queries in console
+        use_sql_comments: true
+    show-sql: true
+
+# Development logging - more verbose
+logging:
+  level:
+    com.strengthhub.strength_hub_api: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.web: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"

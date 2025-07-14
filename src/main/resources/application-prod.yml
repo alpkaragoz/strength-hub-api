@@ -1,0 +1,30 @@
+# Production environment configuration
+spring:
+  # Production database - uses environment variables
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/hub_db}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  # Production JPA settings
+  jpa:
+    hibernate:
+      ddl-auto: validate  # NEVER drops data in production
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+        use_sql_comments: false
+    show-sql: false
+
+# Production logging
+logging:
+  level:
+    com.strengthhub.strength_hub_api: INFO
+    org.hibernate.SQL: WARN
+    org.springframework.web: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

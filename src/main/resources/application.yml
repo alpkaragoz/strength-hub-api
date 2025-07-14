@@ -1,0 +1,38 @@
+# Base configuration
+spring:
+  application:
+    name: strength-hub-api
+
+  # JPA/Hibernate
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: validate  # never drops data
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        show_sql: false
+        jdbc:
+          batch_size: 25
+          fetch_size: 25
+    show-sql: false
+
+# Server Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
