@@ -58,21 +58,16 @@ public class User {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    // One-to-one relationships (optional)
-    @OneToOne(mappedBy = "app_user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Coach coach;
+    // Make the reverse relationships more explicit
+    @OneToOne(mappedBy = "app_user", cascade = CascadeType.ALL)
+    private Lifter lifterProfile;
 
-    @OneToOne(mappedBy = "app_user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Lifter lifter;
+    @OneToOne(mappedBy = "app_user", cascade = CascadeType.ALL)
+    private Coach coachProfile;
 
-    // Helper methods
-    public boolean isCoach() {
-        return coach != null;
-    }
-
-    public boolean isLifter() {
-        return lifter != null;
-    }
+    // Helper methods that make the IS-A relationship clearer
+    public boolean isLifter() { return lifterProfile != null; }
+    public boolean isCoach() { return coachProfile != null; }
 
     public boolean hasBothRoles() {
         return isCoach() && isLifter();

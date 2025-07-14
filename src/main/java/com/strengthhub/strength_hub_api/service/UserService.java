@@ -56,14 +56,12 @@ public class UserService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .isAdmin(false)
-                .createdAt(LocalDateTime.now())
                 .build();
 
         User savedUser = userRepository.save(user);
 
         // Automatically create lifter profile (mandatory)
         Lifter lifter = Lifter.builder()
-                .lifterId(savedUser.getUserId())
                 .app_user(savedUser)
                 .build();
         lifterRepository.save(lifter);
@@ -73,7 +71,7 @@ public class UserService {
             CoachRegistrationRequest req = CoachRegistrationRequest.builder()
                     .coachCode(request.getCoachCode())
                     .build();
-//            coachService.createCoach(savedUser.getUserId(), req);
+            coachService.createCoach(savedUser.getUserId(), req);
         }
 
         log.info("User registered with id: {}", savedUser.getUserId());
