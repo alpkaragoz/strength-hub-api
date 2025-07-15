@@ -12,6 +12,7 @@ import com.strengthhub.strength_hub_api.repository.UserRepository;
 import com.strengthhub.strength_hub_api.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
+
+    @Value("${app.jwt.sliding-refresh-days}")
+    private int slidingRefreshDays;
+
+    @Value("${app.jwt.max-refresh-tokens-per-user}")
+    private int maxRefreshTokensPerUser;
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -45,15 +52,12 @@ public class AuthService {
             throw new BadCredentialsException("Invalid username/email or password");
         }
 
-        // TODO fix logic
-        refreshTokenRepository.revokeAllUserTokens(user.getUserId());
-
-        // Generate new tokens
+        // Generate new tokens with token limit enforcement
         String accessToken = jwtUtil.generateAccessToken(user);
         String refreshToken = jwtUtil.generateRefreshToken(user);
 
-        // Save refresh token to database
-        saveRefreshToken(user, refreshToken);
+        // Save refresh token with limit enforcement
+        saveRefreshTokenWithLimit(user, refreshToken);
 
         // Build roles set for response
         Set<com.strengthhub.strength_hub_api.enums.UserType> roles = buildUserRoles(user);
@@ -87,39 +91,60 @@ public class AuthService {
 
         if (!refreshToken.isValid()) {
             log.warn("Invalid or expired refresh token");
-            // Clean up invalid token
-            refreshTokenRepository.delete(refreshToken);
             throw new TokenRefreshException("Refresh token is expired or revoked");
         }
 
-        // Generate new access token
+        // Generate new access token and refresh token
         User user = refreshToken.getUser();
         String newAccessToken = jwtUtil.generateAccessToken(user);
+        String newRefreshToken = jwtUtil.generateRefreshToken(user);
 
-        log.info("Token refreshed successfully for user: {}", user.getUsername());
+        // Save refresh token with limit enforcement
+        saveRefreshTokenWithLimit(user, newRefreshToken);
+
+        log.info("Token refreshed successfully for user: {}",
+                user.getUsername());
 
         return TokenRefreshResponse.builder()
                 .accessToken(newAccessToken)
-                .refreshToken(requestRefreshToken) // Keep same refresh token
+                .refreshToken(newRefreshToken)
                 .tokenType("Bearer")
                 .expiresIn(jwtUtil.getAccessTokenExpirationTime())
                 .build();
     }
 
     @Transactional
-    public void logout(UUID userId) {
-        log.info("Logout for user: {}", userId);
+    public void logout(String refreshToken) {
+        log.info("Logout attempt with refresh token");
 
-        // Revoke all refresh tokens for this user
+        if (refreshToken == null || refreshToken.trim().isEmpty()) {
+            throw new TokenRefreshException("Refresh token is required for logout");
+        }
+
+        // Find and revoke the specific refresh token
+        RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
+                .orElseThrow(() -> new TokenRefreshException("Refresh token not found"));
+
+        // Mark this specific token as revoked
+        refreshTokenRepository.revokeTokenByValue(refreshToken);
+
+        log.info("User {} logged out successfully from device", token.getUser().getUsername());
+    }
+
+    @Transactional
+    public void logoutFromAllDevices(UUID userId) {
+        log.info("Logout from all devices for user: {}", userId);
+
+        // Revoke all refresh tokens for this user (emergency use)
         refreshTokenRepository.revokeAllUserTokens(userId);
 
-        log.info("User {} logged out successfully", userId);
+        log.info("User {} logged out from all devices", userId);
     }
 
     @Transactional
     public void cleanupExpiredTokens() {
-        log.info("Cleaning up expired refresh tokens");
-        refreshTokenRepository.deleteExpiredTokens(LocalDateTime.now());
+        log.info("Cleaning up expired and revoked refresh tokens");
+        refreshTokenRepository.deleteExpiredAndRevokedTokens(LocalDateTime.now());
     }
 
     private User findUserByUsernameOrEmail(String usernameOrEmail) {
@@ -133,10 +158,10 @@ public class AuthService {
         }
     }
 
-    private void saveRefreshToken(User user, String tokenValue) {
-        // Calculate expiration time
-        LocalDateTime expirationTime = LocalDateTime.now()
-                .plusSeconds(jwtUtil.getRefreshTokenExpirationTime() / 1000);
+    @Transactional
+    private void saveRefreshTokenWithLimit(User user, String tokenValue) {
+        // Calculate expiration time (sliding window starts from now)
+        LocalDateTime expirationTime = LocalDateTime.now().plusDays(slidingRefreshDays);
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .token(tokenValue)
@@ -145,8 +170,18 @@ public class AuthService {
                 .isRevoked(false)
                 .build();
 
+        long userTokenCount = getActiveTokenCountForUser(user.getUserId());
+        if(userTokenCount > maxRefreshTokensPerUser) {
+            refreshTokenRepository.deleteOldestTokenForUser(user.getUserId());
+        }
+
         refreshTokenRepository.save(refreshToken);
-        log.debug("Refresh token saved for user: {}", user.getUsername());
+        log.debug("Refresh token saved for user: {} (expires: {})", user.getUsername(), expirationTime);
+    }
+
+    @Transactional(readOnly = true)
+    private long getActiveTokenCountForUser(UUID userId) {
+        return refreshTokenRepository.countActiveTokensByUserId(userId, LocalDateTime.now());
     }
 
     private Set<com.strengthhub.strength_hub_api.enums.UserType> buildUserRoles(User user) {
