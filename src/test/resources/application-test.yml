@@ -1,0 +1,56 @@
+# Test Configuration
+spring:
+  application:
+    name: strength-hub-api-test
+
+  # H2 In-Memory Database for testing
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    hikari:
+      maximum-pool-size: 5
+
+  # JPA/Hibernate for testing
+  jpa:
+    hibernate:
+      ddl-auto: create-drop  # Recreate schema for each test
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        show_sql: false  # Set to true for debugging
+    show-sql: false
+    database: h2
+
+  # H2 Console (useful for debugging tests)
+  h2:
+    console:
+      enabled: true
+
+# Test-specific configurations
+app:
+  coach:
+    secret-key: test-secret-key
+  jwt:
+    secret: test-jwt-secret-that-is-long-enough-for-hmac-sha256-algorithm-and-needs-to-be-very-long
+    access-token-expiration-ms: 86400000  # 1 day
+    refresh-token-expiration-ms: 604800000  # 7 days
+    issuer: strength-hub-test
+    sliding-refresh-days: 30
+    max-refresh-tokens-per-user: 5
+
+# Logging for tests
+logging:
+  level:
+    com.strengthhub.strength_hub_api: INFO
+    org.hibernate.SQL: WARN
+    org.springframework.security: WARN
+    org.springframework.web: WARN
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Server configuration for tests
+server:
+  port: 0  # Random available port

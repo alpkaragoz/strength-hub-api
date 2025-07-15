@@ -28,7 +28,7 @@ public class CoachCodeService {
 
     @Transactional
     public CoachCodeResponse generateCoachCode(String secretKey) {
-        if(!secretKey.equals(coachSecretKey)) {
+        if(secretKey == null || !secretKey.equals(coachSecretKey)) {
             throw new UnauthorizedAccessException("Cannot generate coach code, wrong credentials.");
         }
         log.info("Generating coach code");
