@@ -27,6 +27,7 @@ public class CoachCode {
     private LocalDateTime expiresAt;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isUsed = false;
 
     @Column(nullable = true, columnDefinition = "UUID")
