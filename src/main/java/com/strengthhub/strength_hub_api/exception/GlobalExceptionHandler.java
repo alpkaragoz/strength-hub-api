@@ -7,6 +7,9 @@ import com.strengthhub.strength_hub_api.exception.coach.CoachNotFoundException;
 import com.strengthhub.strength_hub_api.exception.coach.InvalidCoachAssignmentException;
 import com.strengthhub.strength_hub_api.exception.coach.InvalidCoachCodeException;
 import com.strengthhub.strength_hub_api.exception.common.UnauthorizedAccessException;
+import com.strengthhub.strength_hub_api.exception.connection.ConnectionRequestNotFoundException;
+import com.strengthhub.strength_hub_api.exception.connection.DuplicateConnectionRequestException;
+import com.strengthhub.strength_hub_api.exception.connection.InvalidConnectionRequestException;
 import com.strengthhub.strength_hub_api.exception.lifter.LifterAlreadyExistsException;
 import com.strengthhub.strength_hub_api.exception.lifter.LifterNotFoundException;
 import com.strengthhub.strength_hub_api.exception.user.InvalidUserTypeException;
@@ -280,5 +283,38 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ConnectionRequestNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleConnectionRequestNotFoundException(ConnectionRequestNotFoundException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Connection Request Not Found")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DuplicateConnectionRequestException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateConnectionRequestException(DuplicateConnectionRequestException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("Duplicate Connection Request")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidConnectionRequestException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidConnectionRequestException(InvalidConnectionRequestException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Invalid Connection Request")
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
