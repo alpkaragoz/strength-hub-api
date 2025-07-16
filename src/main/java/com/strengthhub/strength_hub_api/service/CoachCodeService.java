@@ -21,16 +21,10 @@ import java.util.UUID;
 @Slf4j
 public class CoachCodeService {
 
-    @Value("${app.coach.secret-key}")
-    private String coachSecretKey;
-
     private final CoachCodeRepository coachCodeRepository;
 
     @Transactional
-    public CoachCodeResponse generateCoachCode(String secretKey) {
-        if(secretKey == null || !secretKey.equals(coachSecretKey)) {
-            throw new UnauthorizedAccessException("Cannot generate coach code, wrong credentials.");
-        }
+    public CoachCodeResponse generateCoachCode() {
         log.info("Generating coach code");
 
         String code = generateUniqueCode();

@@ -7,6 +7,7 @@ import com.strengthhub.strength_hub_api.service.workout.WorkoutWeekService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class WorkoutWeekController {
     private final WorkoutWeekService workoutWeekService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COACH')")
     public ResponseEntity<WorkoutWeekResponse> createWorkoutWeek(@Valid @RequestBody WorkoutWeekRequest request) {
         WorkoutWeekResponse createdWeek = workoutWeekService.createWorkoutWeek(request);
         return new ResponseEntity<>(createdWeek, HttpStatus.CREATED);
@@ -48,6 +50,7 @@ public class WorkoutWeekController {
     }
 
     @PutMapping("/{weekId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COACH')")
     public ResponseEntity<WorkoutWeekResponse> updateWorkoutWeek(@PathVariable UUID weekId,
                                                                  @Valid @RequestBody WorkoutWeekRequest request) {
         WorkoutWeekResponse updatedWeek = workoutWeekService.updateWorkoutWeek(weekId, request);
@@ -55,6 +58,7 @@ public class WorkoutWeekController {
     }
 
     @DeleteMapping("/{weekId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COACH')")
     public ResponseEntity<Void> deleteWorkoutWeek(@PathVariable UUID weekId) {
         workoutWeekService.deleteWorkoutWeek(weekId);
         return ResponseEntity.noContent().build();

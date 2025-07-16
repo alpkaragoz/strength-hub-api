@@ -5,6 +5,7 @@ import com.strengthhub.strength_hub_api.service.CoachCodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +19,10 @@ public class CoachCodeController {
 
     private final CoachCodeService coachCodeService;
 
-    // TODO will change auth system no secretkey in body
     @PostMapping("/generate")
-    public ResponseEntity<CoachCodeResponse> generateCoachCode(@Valid @RequestBody String secretKey) {
-        CoachCodeResponse generatedCode = coachCodeService.generateCoachCode(secretKey);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CoachCodeResponse> generateCoachCode() {
+        CoachCodeResponse generatedCode = coachCodeService.generateCoachCode();
         return new ResponseEntity<>(generatedCode, HttpStatus.CREATED);
     }
 }

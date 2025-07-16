@@ -12,6 +12,7 @@ import com.strengthhub.strength_hub_api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,12 +47,14 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest request) {
         authService.logout(request.getRefreshToken());
         return ResponseEntity.ok("Logout successful");
     }
 
     @PostMapping("/logout-all-devices")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> logoutFromAllDevices() {
         UUID currentUserId = SecurityUtils.getCurrentUserId();
         authService.logoutFromAllDevices(currentUserId);
@@ -59,6 +62,7 @@ public class AuthController {
     }
 
     @GetMapping("/validate")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> validateToken() {
         // If this endpoint is reached, the token is valid (thanks to the JWT filter)
         UUID currentUserId = SecurityUtils.getCurrentUserId();

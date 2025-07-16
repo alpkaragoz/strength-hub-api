@@ -8,6 +8,7 @@ import com.strengthhub.strength_hub_api.service.workout.WorkoutPlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class WorkoutPlanController {
     private final WorkoutPlanService workoutPlanService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COACH')")
     public ResponseEntity<WorkoutPlanResponse> createWorkoutPlan(@Valid @RequestBody WorkoutPlanCreateRequest request) {
         WorkoutPlanResponse createdPlan = workoutPlanService.createWorkoutPlan(request);
         return new ResponseEntity<>(createdPlan, HttpStatus.CREATED);
@@ -48,6 +50,7 @@ public class WorkoutPlanController {
     }
 
     @PutMapping("/{planId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COACH')")
     public ResponseEntity<WorkoutPlanResponse> updateWorkoutPlan(@PathVariable UUID planId,
                                                                  @Valid @RequestBody WorkoutPlanUpdateRequest request) {
         WorkoutPlanResponse updatedPlan = workoutPlanService.updateWorkoutPlan(planId, request);
@@ -68,6 +71,7 @@ public class WorkoutPlanController {
     }
 
     @DeleteMapping("/{planId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COACH')")
     public ResponseEntity<Void> deleteWorkoutPlan(@PathVariable UUID planId) {
         workoutPlanService.deleteWorkoutPlan(planId);
         return ResponseEntity.noContent().build();

@@ -9,6 +9,7 @@ import com.strengthhub.strength_hub_api.service.CoachService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class CoachController {
     private final CoachService coachService;
 
     @PostMapping("/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.userId")
     public ResponseEntity<CoachResponse> createCoach(@PathVariable UUID userId,
                                                      @Valid @RequestBody CoachRegistrationRequest request) {
         CoachResponse coach = coachService.createCoach(userId, request);
@@ -44,6 +46,7 @@ public class CoachController {
     }
 
     @PutMapping("/{coachId}")
+    @PreAuthorize("hasRole('ADMIN') or #coachId == authentication.principal.userId")
     public ResponseEntity<CoachResponse> updateCoach(@PathVariable UUID coachId,
                                                      @Valid @RequestBody CoachUpdateRequest request) {
         CoachResponse updatedCoach = coachService.updateCoach(coachId, request);
@@ -51,6 +54,7 @@ public class CoachController {
     }
 
     @DeleteMapping("/{coachId}")
+    @PreAuthorize("hasRole('ADMIN') or #coachId == authentication.principal.userId")
     public ResponseEntity<Void> deleteCoach(@PathVariable UUID coachId) {
         coachService.deleteCoach(coachId);
         return ResponseEntity.noContent().build();

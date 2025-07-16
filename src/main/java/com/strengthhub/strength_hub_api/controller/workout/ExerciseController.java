@@ -6,6 +6,7 @@ import com.strengthhub.strength_hub_api.service.workout.ExerciseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class ExerciseController {
     private final ExerciseService exerciseService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COACH')")
     public ResponseEntity<ExerciseResponse> createExercise(@Valid @RequestBody ExerciseRequest request) {
         ExerciseResponse createdExercise = exerciseService.createExercise(request);
         return new ResponseEntity<>(createdExercise, HttpStatus.CREATED);
@@ -67,6 +69,7 @@ public class ExerciseController {
     }
 
     @DeleteMapping("/{exerciseId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COACH')")
     public ResponseEntity<Void> deleteExercise(@PathVariable UUID exerciseId) {
         exerciseService.deleteExercise(exerciseId);
         return ResponseEntity.noContent().build();

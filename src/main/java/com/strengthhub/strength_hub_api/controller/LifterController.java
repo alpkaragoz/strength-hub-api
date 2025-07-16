@@ -5,6 +5,7 @@ import com.strengthhub.strength_hub_api.dto.response.lifter.LifterResponse;
 import com.strengthhub.strength_hub_api.service.LifterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class LifterController {
     }
 
     @DeleteMapping("/{lifterId}")
+    @PreAuthorize("hasRole('ADMIN') or #lifterId == authentication.principal.userId")
     public ResponseEntity<Void> deleteLifter(@PathVariable UUID lifterId) {
         lifterService.deleteLifter(lifterId);
         return ResponseEntity.noContent().build();

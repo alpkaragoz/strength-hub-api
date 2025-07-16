@@ -72,7 +72,7 @@ class CoachCodeServiceTest {
         given(coachCodeRepository.save(any(CoachCode.class))).willReturn(testCoachCode);
 
         // When
-        CoachCodeResponse result = coachCodeService.generateCoachCode(validSecretKey);
+        CoachCodeResponse result = coachCodeService.generateCoachCode();
 
         // Then
         assertThat(result).isNotNull();
@@ -88,17 +88,6 @@ class CoachCodeServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception with invalid secret key")
-    void generateCoachCode_WithInvalidSecretKey_ShouldThrowUnauthorizedAccessException() {
-        // When & Then
-        assertThatThrownBy(() -> coachCodeService.generateCoachCode(invalidSecretKey))
-                .isInstanceOf(UnauthorizedAccessException.class)
-                .hasMessageContaining("Cannot generate coach code, wrong credentials");
-
-        then(coachCodeRepository).should(never()).save(any(CoachCode.class));
-    }
-
-    @Test
     @DisplayName("Should generate unique code when collision occurs")
     void generateCoachCode_WithCodeCollision_ShouldGenerateUniqueCode() {
         // Given
@@ -108,7 +97,7 @@ class CoachCodeServiceTest {
         given(coachCodeRepository.save(any(CoachCode.class))).willReturn(testCoachCode);
 
         // When
-        CoachCodeResponse result = coachCodeService.generateCoachCode(validSecretKey);
+        CoachCodeResponse result = coachCodeService.generateCoachCode();
 
         // Then
         assertThat(result).isNotNull();
@@ -222,7 +211,7 @@ class CoachCodeServiceTest {
         given(coachCodeRepository.save(any(CoachCode.class))).willReturn(testCoachCode);
 
         // When
-        CoachCodeResponse result = coachCodeService.generateCoachCode(validSecretKey);
+        CoachCodeResponse result = coachCodeService.generateCoachCode();
 
         // Then
         assertThat(result.getStatus()).isEqualTo(CoachCodeStatus.ACTIVE);
@@ -246,7 +235,7 @@ class CoachCodeServiceTest {
         given(coachCodeRepository.save(any(CoachCode.class))).willReturn(usedCode);
 
         // When
-        CoachCodeResponse result = coachCodeService.generateCoachCode(validSecretKey);
+        CoachCodeResponse result = coachCodeService.generateCoachCode();
 
         // Then
         assertThat(result.getStatus()).isEqualTo(CoachCodeStatus.USED);
@@ -272,32 +261,10 @@ class CoachCodeServiceTest {
         given(coachCodeRepository.save(any(CoachCode.class))).willReturn(expiredCode);
 
         // When
-        CoachCodeResponse result = coachCodeService.generateCoachCode(validSecretKey);
+        CoachCodeResponse result = coachCodeService.generateCoachCode();
 
         // Then
         assertThat(result.getStatus()).isEqualTo(CoachCodeStatus.EXPIRED);
-    }
-
-    @Test
-    @DisplayName("Should handle null secret key")
-    void generateCoachCode_WithNullSecretKey_ShouldThrowUnauthorizedAccessException() {
-        // When & Then
-        assertThatThrownBy(() -> coachCodeService.generateCoachCode(null))
-                .isInstanceOf(UnauthorizedAccessException.class)
-                .hasMessageContaining("wrong credentials");
-
-        then(coachCodeRepository).should(never()).save(any(CoachCode.class));
-    }
-
-    @Test
-    @DisplayName("Should handle empty secret key")
-    void generateCoachCode_WithEmptySecretKey_ShouldThrowUnauthorizedAccessException() {
-        // When & Then
-        assertThatThrownBy(() -> coachCodeService.generateCoachCode(""))
-                .isInstanceOf(UnauthorizedAccessException.class)
-                .hasMessageContaining("wrong credentials");
-
-        then(coachCodeRepository).should(never()).save(any(CoachCode.class));
     }
 
     @Test
@@ -315,7 +282,7 @@ class CoachCodeServiceTest {
         });
 
         // When
-        coachCodeService.generateCoachCode(validSecretKey);
+        coachCodeService.generateCoachCode();
 
         // Then - assertions are in the answer above
         then(coachCodeRepository).should().save(any(CoachCode.class));

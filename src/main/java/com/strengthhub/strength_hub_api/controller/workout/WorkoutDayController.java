@@ -6,6 +6,7 @@ import com.strengthhub.strength_hub_api.service.workout.WorkoutDayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class WorkoutDayController {
     private final WorkoutDayService workoutDayService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COACH')")
     public ResponseEntity<WorkoutDayResponse> createWorkoutDay(@Valid @RequestBody WorkoutDayRequest request) {
         WorkoutDayResponse createdDay = workoutDayService.createWorkoutDay(request);
         return new ResponseEntity<>(createdDay, HttpStatus.CREATED);
@@ -54,6 +56,7 @@ public class WorkoutDayController {
     }
 
     @PutMapping("/{dayId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COACH')")
     public ResponseEntity<WorkoutDayResponse> updateWorkoutDay(@PathVariable UUID dayId,
                                                                @Valid @RequestBody WorkoutDayRequest request) {
         WorkoutDayResponse updatedDay = workoutDayService.updateWorkoutDay(dayId, request);
@@ -61,6 +64,7 @@ public class WorkoutDayController {
     }
 
     @DeleteMapping("/{dayId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COACH')")
     public ResponseEntity<Void> deleteWorkoutDay(@PathVariable UUID dayId) {
         workoutDayService.deleteWorkoutDay(dayId);
         return ResponseEntity.noContent().build();
