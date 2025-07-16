@@ -39,14 +39,15 @@ management:
 
 app:
   jwt:
+    secret: ${JWT_SECRET}
     access-token-expiration-ms: ${JWT_ACCESS_EXPIRATION}
     refresh-token-expiration-ms: ${JWT_REFRESH_EXPIRATION}
     issuer: ${JWT_ISSUER}
     sliding-refresh-days: ${JWT_SLIDING_REFRESH_DAYS}
     max-refresh-tokens-per-user: ${JWT_MAX_REFRESH_TOKENS_PER_USER}
   admin:
-    username: ${ADMIN_USERNAME}
-    email: ${ADMIN_EMAIL}
-    password: ${ADMIN_PASSWORD}
-    first-name: ${ADMIN_FIRST_NAME}
-    last-name: ${ADMIN_LAST_NAME}
+    username: ${ADMIN_USERNAME:admin}
+    email: ${ADMIN_EMAIL:admin@strengthhub.com}
+    password: ${ADMIN_PASSWORD:}
+    first-name: ${ADMIN_FIRST_NAME:System}
+    last-name: ${ADMIN_LAST_NAME:Administrator}
