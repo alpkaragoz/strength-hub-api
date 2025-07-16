@@ -14,6 +14,8 @@ import com.strengthhub.strength_hub_api.model.ConnectionRequest;
 import com.strengthhub.strength_hub_api.model.User;
 import com.strengthhub.strength_hub_api.repository.ConnectionRequestRepository;
 import com.strengthhub.strength_hub_api.repository.UserRepository;
+import com.strengthhub.strength_hub_api.service.CoachService;
+import com.strengthhub.strength_hub_api.service.LifterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -76,7 +78,7 @@ public class ConnectionRequestService {
         log.info("User {} responding to connection request {}", responderId, requestId);
 
         ConnectionRequest connectionRequest = connectionRequestRepository.findById(requestId)
-                .orElseThrow(() -> new ConnectionRequestNotFoundException("Connection request not found"));
+                .orElseThrow(() -> new ConnectionRequestNotFoundException(requestId));
 
         // Verify the responder is the receiver
         if (!connectionRequest.getReceiver().getUserId().equals(responderId)) {
@@ -85,7 +87,7 @@ public class ConnectionRequestService {
 
         // Verify request is still pending
         if (!connectionRequest.isPending()) {
-            throw new ConnectionRequestNotFoundException("This request has already been responded to");
+            throw new InvalidConnectionRequestException("This request has already been responded to");
         }
 
         // Validate status
@@ -113,7 +115,7 @@ public class ConnectionRequestService {
         log.info("User {} canceling connection request {}", senderId, requestId);
 
         ConnectionRequest connectionRequest = connectionRequestRepository.findById(requestId)
-                .orElseThrow(() -> new ConnectionRequestNotFoundException("Connection request not found"));
+                .orElseThrow(() -> new ConnectionRequestNotFoundException(requestId));
 
         // Verify the canceller is the sender
         if (!connectionRequest.getSender().getUserId().equals(senderId)) {
@@ -122,7 +124,7 @@ public class ConnectionRequestService {
 
         // Verify request is still pending
         if (!connectionRequest.isPending()) {
-            throw new ConnectionRequestNotFoundException("This request has already been responded to");
+            throw new InvalidConnectionRequestException("This request has already been responded to");
         }
 
         connectionRequest.setStatus(ConnectionRequestStatus.CANCELLED);
@@ -168,7 +170,7 @@ public class ConnectionRequestService {
     @Transactional(readOnly = true)
     public ConnectionRequestResponse getConnectionRequestById(UUID requestId) {
         ConnectionRequest request = connectionRequestRepository.findById(requestId)
-                .orElseThrow(() -> new ConnectionRequestNotFoundException("Connection request not found"));
+                .orElseThrow(() -> new ConnectionRequestNotFoundException(requestId));
 
         return mapToResponse(request);
     }
@@ -217,7 +219,7 @@ public class ConnectionRequestService {
             log.info("Coach-lifter relationship created: coach={}, lifter={}", coachId, lifterId);
         } catch (Exception e) {
             log.error("Failed to create coach-lifter relationship: {}", e.getMessage());
-            throw new InvalidConnectionRequestException("Failed to create coach-lifter relationship");
+            throw new InvalidConnectionRequestException("Failed to create coach-lifter relationship: " + e.getMessage());
         }
     }
 

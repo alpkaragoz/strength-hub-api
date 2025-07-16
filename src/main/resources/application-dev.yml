@@ -2,9 +2,9 @@
 spring:
   # Local development database
   datasource:
-    url: jdbc:postgresql://localhost:5432/hub_db
-    username: postgres
-    password: postgres
+    url: ${DATABASE_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   # Development JPA settings

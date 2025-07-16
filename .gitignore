@@ -42,8 +42,10 @@ logs/
 
 # Environment Variables (if you create any)
 .env
+.env.dev
 .env.local
 .env.production
+.env.prod
 .env.staging
 
 # Temporary files

@@ -2,9 +2,9 @@
 spring:
   # Production database - uses environment variables
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/hub_db}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: ${DATABASE_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 20      # Max database connections
