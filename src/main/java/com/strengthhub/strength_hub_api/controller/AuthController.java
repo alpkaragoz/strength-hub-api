@@ -60,13 +60,4 @@ public class AuthController {
         authService.logoutFromAllDevices(currentUserId);
         return ResponseEntity.ok("Logged out from all devices successfully");
     }
-
-    @GetMapping("/validate")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> validateToken() {
-        // If this endpoint is reached, the token is valid (thanks to the JWT filter)
-        UUID currentUserId = SecurityUtils.getCurrentUserId();
-        String currentUsername = SecurityUtils.getCurrentUsername();
-        return ResponseEntity.ok("Token is valid for user: " + currentUsername + " (ID: " + currentUserId + ")");
-    }
 }

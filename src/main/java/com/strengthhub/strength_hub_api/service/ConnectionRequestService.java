@@ -5,7 +5,7 @@ import com.strengthhub.strength_hub_api.dto.request.connection.ConnectionRequest
 import com.strengthhub.strength_hub_api.dto.response.connection.ConnectionRequestResponse;
 import com.strengthhub.strength_hub_api.enums.ConnectionRequestStatus;
 import com.strengthhub.strength_hub_api.enums.ConnectionRequestType;
-import com.strengthhub.strength_hub_api.exception.common.UnauthorizedAccessException;
+import com.strengthhub.strength_hub_api.exception.common.ForbiddenAccessException;
 import com.strengthhub.strength_hub_api.exception.connection.ConnectionRequestNotFoundException;
 import com.strengthhub.strength_hub_api.exception.connection.DuplicateConnectionRequestException;
 import com.strengthhub.strength_hub_api.exception.connection.InvalidConnectionRequestException;
@@ -14,8 +14,6 @@ import com.strengthhub.strength_hub_api.model.ConnectionRequest;
 import com.strengthhub.strength_hub_api.model.User;
 import com.strengthhub.strength_hub_api.repository.ConnectionRequestRepository;
 import com.strengthhub.strength_hub_api.repository.UserRepository;
-import com.strengthhub.strength_hub_api.service.CoachService;
-import com.strengthhub.strength_hub_api.service.LifterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -82,7 +80,7 @@ public class ConnectionRequestService {
 
         // Verify the responder is the receiver
         if (!connectionRequest.getReceiver().getUserId().equals(responderId)) {
-            throw new UnauthorizedAccessException("You can only respond to requests sent to you");
+            throw new ForbiddenAccessException("You can only respond to requests sent to you");
         }
 
         // Verify request is still pending
@@ -119,7 +117,7 @@ public class ConnectionRequestService {
 
         // Verify the canceller is the sender
         if (!connectionRequest.getSender().getUserId().equals(senderId)) {
-            throw new UnauthorizedAccessException("You can only cancel requests you sent");
+            throw new ForbiddenAccessException("You can only cancel requests you sent");
         }
 
         // Verify request is still pending

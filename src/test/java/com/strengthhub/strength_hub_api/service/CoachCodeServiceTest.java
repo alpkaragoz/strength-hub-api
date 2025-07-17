@@ -2,7 +2,6 @@ package com.strengthhub.strength_hub_api.service;
 
 import com.strengthhub.strength_hub_api.dto.response.coach.CoachCodeResponse;
 import com.strengthhub.strength_hub_api.enums.CoachCodeStatus;
-import com.strengthhub.strength_hub_api.exception.common.UnauthorizedAccessException;
 import com.strengthhub.strength_hub_api.exception.coach.InvalidCoachCodeException;
 import com.strengthhub.strength_hub_api.model.CoachCode;
 import com.strengthhub.strength_hub_api.repository.CoachCodeRepository;

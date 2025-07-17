@@ -2,14 +2,12 @@ package com.strengthhub.strength_hub_api.service;
 
 import com.strengthhub.strength_hub_api.dto.response.coach.CoachCodeResponse;
 import com.strengthhub.strength_hub_api.enums.CoachCodeStatus;
-import com.strengthhub.strength_hub_api.exception.common.UnauthorizedAccessException;
 import com.strengthhub.strength_hub_api.model.CoachCode;
 import com.strengthhub.strength_hub_api.exception.coach.InvalidCoachCodeException;
 import com.strengthhub.strength_hub_api.repository.CoachCodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

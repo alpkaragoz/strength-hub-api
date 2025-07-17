@@ -1,6 +1,6 @@
 package com.strengthhub.strength_hub_api.security;
 
-import com.strengthhub.strength_hub_api.exception.common.UnauthorizedAccessException;
+import com.strengthhub.strength_hub_api.exception.common.ForbiddenAccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +17,7 @@ public class SecurityUtils {
         if (authentication != null && authentication.getPrincipal() instanceof UserPrincipal) {
             return (UserPrincipal) authentication.getPrincipal();
         }
-        throw new UnauthorizedAccessException("No authenticated user found");
+        throw new ForbiddenAccessException("No authenticated user found");
     }
 
     public static UUID getCurrentUserId() {
@@ -32,7 +32,7 @@ public class SecurityUtils {
         try {
             return getCurrentUserPrincipal().getAuthorities().stream()
                     .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
-        } catch (UnauthorizedAccessException e) {
+        } catch (ForbiddenAccessException e) {
             return false;
         }
     }
@@ -41,7 +41,7 @@ public class SecurityUtils {
         try {
             return getCurrentUserPrincipal().getAuthorities().stream()
                     .anyMatch(authority -> authority.getAuthority().equals("ROLE_COACH"));
-        } catch (UnauthorizedAccessException e) {
+        } catch (ForbiddenAccessException e) {
             return false;
         }
     }
@@ -50,7 +50,7 @@ public class SecurityUtils {
         try {
             return getCurrentUserPrincipal().getAuthorities().stream()
                     .anyMatch(authority -> authority.getAuthority().equals("ROLE_LIFTER"));
-        } catch (UnauthorizedAccessException e) {
+        } catch (ForbiddenAccessException e) {
             return false;
         }
     }
@@ -59,32 +59,32 @@ public class SecurityUtils {
         try {
             UserPrincipal principal = getCurrentUserPrincipal();
             return isCurrentUserAdmin() || principal.getUserId().equals(userId);
-        } catch (UnauthorizedAccessException e) {
+        } catch (ForbiddenAccessException e) {
             return false;
         }
     }
 
     public static void requireAdmin() {
         if (!isCurrentUserAdmin()) {
-            throw new UnauthorizedAccessException("Admin privileges required");
+            throw new ForbiddenAccessException("Admin privileges required");
         }
     }
 
     public static void requireCoach() {
         if (!isCurrentUserCoach() && !isCurrentUserAdmin()) {
-            throw new UnauthorizedAccessException("Coach privileges required");
+            throw new ForbiddenAccessException("Coach privileges required");
         }
     }
 
     public static void requireLifter() {
         if (!isCurrentUserLifter() && !isCurrentUserAdmin()) {
-            throw new UnauthorizedAccessException("Lifter privileges required");
+            throw new ForbiddenAccessException("Lifter privileges required");
         }
     }
 
     public static void requireCurrentUserOrAdmin(UUID userId) {
         if (!isCurrentUserOrAdmin(userId)) {
-            throw new UnauthorizedAccessException("Access denied: can only access own data");
+            throw new ForbiddenAccessException("Access denied: can only access own data");
         }
     }
 }

@@ -46,8 +46,24 @@ app:
     sliding-refresh-days: ${JWT_SLIDING_REFRESH_DAYS}
     max-refresh-tokens-per-user: ${JWT_MAX_REFRESH_TOKENS_PER_USER}
   admin:
-    username: ${ADMIN_USERNAME:admin}
-    email: ${ADMIN_EMAIL:admin@strengthhub.com}
-    password: ${ADMIN_PASSWORD:}
-    first-name: ${ADMIN_FIRST_NAME:System}
-    last-name: ${ADMIN_LAST_NAME:Administrator}
+    username: ${ADMIN_USERNAME}
+    email: ${ADMIN_EMAIL}
+    password: ${ADMIN_PASSWORD}
+    first-name: ${ADMIN_FIRST_NAME}
+    last-name: ${ADMIN_LAST_NAME}
+  demo:
+    enabled: ${DEMO_USERS_ENABLED:false}
+    lifter:
+      username: ${DEMO_LIFTER_USERNAME}
+      email: ${DEMO_LIFTER_EMAIL}
+      password: ${DEMO_LIFTER_PASSWORD}
+      first-name: ${DEMO_LIFTER_FIRST_NAME}
+      last-name: ${DEMO_LIFTER_LAST_NAME}
+    coach:
+      username: ${DEMO_COACH_USERNAME}
+      email: ${DEMO_COACH_EMAIL}
+      password: ${DEMO_COACH_PASSWORD}
+      first-name: ${DEMO_COACH_FIRST_NAME}
+      last-name: ${DEMO_COACH_LAST_NAME}
+      bio: ${DEMO_COACH_BIO}
+      certifications: ${DEMO_COACH_CERTIFICATIONS}

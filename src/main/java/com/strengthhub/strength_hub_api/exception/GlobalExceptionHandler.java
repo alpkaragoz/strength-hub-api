@@ -6,7 +6,7 @@ import com.strengthhub.strength_hub_api.exception.coach.CoachAlreadyExistsExcept
 import com.strengthhub.strength_hub_api.exception.coach.CoachNotFoundException;
 import com.strengthhub.strength_hub_api.exception.coach.InvalidCoachAssignmentException;
 import com.strengthhub.strength_hub_api.exception.coach.InvalidCoachCodeException;
-import com.strengthhub.strength_hub_api.exception.common.UnauthorizedAccessException;
+import com.strengthhub.strength_hub_api.exception.common.ForbiddenAccessException;
 import com.strengthhub.strength_hub_api.exception.connection.ConnectionRequestNotFoundException;
 import com.strengthhub.strength_hub_api.exception.connection.DuplicateConnectionRequestException;
 import com.strengthhub.strength_hub_api.exception.connection.InvalidConnectionRequestException;
@@ -114,8 +114,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(UnauthorizedAccessException.class)
-    public ResponseEntity<ErrorResponse> handleUnauthorizedAccessException(UnauthorizedAccessException e) {
+    @ExceptionHandler(ForbiddenAccessException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedAccessException(ForbiddenAccessException e) {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.FORBIDDEN.value())
