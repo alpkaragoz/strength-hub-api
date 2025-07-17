@@ -48,16 +48,16 @@ public class AuthController {
 
     @PostMapping("/logout")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest request) {
+    public ResponseEntity<Void> logout(@Valid @RequestBody RefreshTokenRequest request) {
         authService.logout(request.getRefreshToken());
-        return ResponseEntity.ok("Logout successful");
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/logout-all-devices")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> logoutFromAllDevices() {
+    public ResponseEntity<Void> logoutFromAllDevices() {
         UUID currentUserId = SecurityUtils.getCurrentUserId();
         authService.logoutFromAllDevices(currentUserId);
-        return ResponseEntity.ok("Logged out from all devices successfully");
+        return ResponseEntity.noContent().build();
     }
 }

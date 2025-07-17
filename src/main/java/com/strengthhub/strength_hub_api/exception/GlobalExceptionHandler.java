@@ -1,6 +1,7 @@
 package com.strengthhub.strength_hub_api.exception;
 
 import com.strengthhub.strength_hub_api.dto.response.ErrorResponse;
+import com.strengthhub.strength_hub_api.exception.auth.AuthenticationFailedException;
 import com.strengthhub.strength_hub_api.exception.auth.TokenRefreshException;
 import com.strengthhub.strength_hub_api.exception.coach.CoachAlreadyExistsException;
 import com.strengthhub.strength_hub_api.exception.coach.CoachNotFoundException;
@@ -115,7 +116,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ForbiddenAccessException.class)
-    public ResponseEntity<ErrorResponse> handleUnauthorizedAccessException(ForbiddenAccessException e) {
+    public ResponseEntity<ErrorResponse> handleForbiddenAccessException(ForbiddenAccessException e) {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.FORBIDDEN.value())
@@ -135,6 +136,18 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage())
                 .build();
         log.warn("Token refresh failed: {}", e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AuthenticationFailedException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationFailedException(AuthenticationFailedException e) {
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error("Authentication Failed")
+                .message(e.getMessage())
+                .build();
+        log.warn("Authentication failed: {}", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 

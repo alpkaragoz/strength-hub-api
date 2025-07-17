@@ -1,5 +1,6 @@
 package com.strengthhub.strength_hub_api.security;
 
+import com.strengthhub.strength_hub_api.exception.auth.AuthenticationFailedException;
 import com.strengthhub.strength_hub_api.model.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -62,20 +63,26 @@ public class JwtUtil {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    /**
+     * Validates JWT token - throws exceptions on any issues
+     * @param token JWT token to validate
+     * @throws AuthenticationFailedException if token is invalid, expired, malformed, etc.
+     */
+    public void validateToken(String token) {
         try {
             Claims claims = getClaimsFromToken(token);
 
             // Validate issuer
             if (!issuer.equals(claims.getIssuer())) {
-                log.error("Invalid issuer: {}", claims.getIssuer());
-                return false;
+                throw AuthenticationFailedException.invalidToken();
             }
 
-            return true;
-        } catch (JwtException e) {
-            log.error("Invalid JWT token: {}", e.getMessage());
-            return false;
+        } catch (ExpiredJwtException e) {
+            throw AuthenticationFailedException.expiredToken();
+        } catch (MalformedJwtException e) {
+            throw AuthenticationFailedException.malformedToken();
+        } catch (JwtException e ) {
+            throw AuthenticationFailedException.invalidToken();
         }
     }
 
